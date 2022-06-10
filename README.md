@@ -1,27 +1,4 @@
-# WhatsMyAgeAgain
-
-<br>
-
-## Modello 
-
-<hr>
-
-<br>
-
-To do list: 
-
-- [ ] Fittare modello (esistente) 
-  - [ ] Aggiustamento parametri
-  - [ ] Aggiustamento epoche 
-  - [ ] No Over
-- [ ] Cross Validation (finto) tra 2 dataset 
-- [ ] Visionare kaggle (modelli piu' performanti) 
-- [ ] Passare modello applicativo mobile 
-- [ ] Ottimizzazione per implementazione 
-
-<br> 
-
-## Applicativo mobile 
+# Applicativo mobile 
 
 <hr>
 
