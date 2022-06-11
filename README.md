@@ -34,7 +34,7 @@ To do list:
 - [x] Aggiunta "galleria"
 - [ ] Test sul device della camera
 - [x] Test web della camera
-- [ ] Montare modello su applicativo 
+- [x] Montare modello su applicativo 
   - [ ] Trovare limiti (computazionali)
   - [ ] Cercare di gestire eventuali tempi di load 
   - [ ] Possibili soluzione sulla gestione dell'efficenza
