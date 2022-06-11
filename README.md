@@ -29,6 +29,9 @@ To do list:
 
 To do list: 
 
+- [x] Inizializzazione applicazione mobile
+- [x] Aggiunta fotocamera con parte nativa
+- [x] Aggiunta "galleria"
 - [ ] Montare modello su applicativo 
   - [ ] Trovare limiti (computazionali)
   - [ ] Cercare di gestire eventuali tempi di load 
