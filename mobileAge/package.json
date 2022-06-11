@@ -29,6 +29,7 @@
     "@capacitor/storage": "^1.2.5",
     "@ionic/angular": "^6.1.9",
     "@ionic/pwa-elements": "^3.1.1",
+    "@tensorflow/tfjs": "^3.18.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.2.0",
     "zone.js": "~0.11.4"
