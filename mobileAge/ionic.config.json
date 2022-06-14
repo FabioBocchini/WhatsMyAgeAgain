@@ -1,7 +1,0 @@
-{
-  "name": "mobileAge",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular"
-}
