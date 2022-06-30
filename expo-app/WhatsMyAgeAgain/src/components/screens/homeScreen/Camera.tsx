@@ -1,6 +1,8 @@
 import React, {useState, useEffect, Dispatch, SetStateAction, useCallback, useRef} from 'react'
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native'
 import {Camera, CameraCapturedPicture, CameraType} from 'expo-camera'
+import {Icon} from '@rneui/base'
+import {ICON_COLOR} from '../../../constants/colors'
 
 type TProps = {
   setPicture: Dispatch<SetStateAction<CameraCapturedPicture | null>>
@@ -28,7 +30,9 @@ export const CustomCamera = ({setPicture, setOpenCamera}: TProps) => {
     }
 
     await cameraRef.current?.takePictureAsync({
-      onPictureSaved: setPicture
+      isImageMirror: true,
+      onPictureSaved: setPicture,
+      base64: true
     })
   }, [cameraReady])
 
@@ -42,6 +46,7 @@ export const CustomCamera = ({setPicture, setOpenCamera}: TProps) => {
   if (hasPermission === null) {
     return <View/>
   }
+
   if (!hasPermission) {
     return <Text>L&apos;applicazione non ha accesso alla fotocamera</Text>
   }
@@ -50,21 +55,21 @@ export const CustomCamera = ({setPicture, setOpenCamera}: TProps) => {
     <View style={styles.container}>
       <Camera style={styles.camera} type={type} onCameraReady={() => setCameraReady(true)} ref={cameraRef}>
 
-        <View style={styles.abortButtonContainer}>
-          <TouchableOpacity style={styles.button} onPress={handleCancel}>
-            <Text style={styles.text}> Cancel </Text>
+        <View style={styles.topRowContainer}>
+          <TouchableOpacity style={styles.abortButton} onPress={handleCancel}>
+            <Icon type="antdesign" name="close" size={30} color={ICON_COLOR}/>
           </TouchableOpacity>
         </View>
 
-        <View style={styles.captureButtonContainer}>
-          <TouchableOpacity style={styles.button} onPress={handleCapture}>
-            <Text style={styles.text}> Scatta </Text>
-          </TouchableOpacity>
-        </View>
+        <View style={styles.bottomRowContainer}>
+          <View style={styles.placeholder}/>
 
-        <View style={styles.flipButtonContainer}>
-          <TouchableOpacity style={styles.button} onPress={handleFlip}>
-            <Text style={styles.text}> Flip </Text>
+          <TouchableOpacity style={styles.captureButton} onPress={handleCapture}>
+            <Icon type="entypo" name="circle" size={70} color={ICON_COLOR}/>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.flipButton} onPress={handleFlip}>
+            <Icon type="antdesign" name="sync" size={30} color={ICON_COLOR}/>
           </TouchableOpacity>
         </View>
 
@@ -75,34 +80,45 @@ export const CustomCamera = ({setPicture, setOpenCamera}: TProps) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    width: '100%'
+    height: '100%',
   },
   camera: {
-    flex: 1,
+    display: 'flex',
+    height: '100%',
+    justifyContent: 'space-between',
   },
-  abortButtonContainer: {
-    flex: 1,
-    backgroundColor: 'transparent',
+  topRowContainer: {
+    backgroundColor: 'black',
+    justifyContent: 'flex-end',
+    height: 120,
+    opacity: 0.8,
+    padding: 20
+  },
+  bottomRowContainer: {
+    backgroundColor: 'black',
+    display: 'flex',
     flexDirection: 'row',
-    margin: 20,
+    justifyContent: 'space-between',
+    height: 150,
+    opacity: 0.8,
+    padding: 20
   },
-  flipButtonContainer: {
+  abortButton: {
+    alignSelf: 'flex-start',
+    justifyContent: 'center'
+  },
+  flipButton: {
     flex: 1,
-    backgroundColor: 'transparent',
-    flexDirection: 'row',
-    margin: 20,
-  },
-  captureButtonContainer: {
-    flex: 1,
-    backgroundColor: 'transparent',
-    flexDirection: 'row',
-    margin: 20,
-  },
-  button: {
-    flex: 0.2,
-    alignSelf: 'center',
+    justifyContent: 'center',
     alignItems: 'center',
+  },
+  captureButton: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  placeholder: {
+    flex: 1,
   },
   text: {
     fontSize: 18,

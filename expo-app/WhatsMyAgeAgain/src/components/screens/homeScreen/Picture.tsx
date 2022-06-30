@@ -7,9 +7,10 @@ type TProps = {
 }
 
 export const Picture = ({picture}: TProps) => {
+
   return (
     <View>
-      <Image 
+      <Image
         source={{uri: picture.uri}}
         style={styles.image}
       />
@@ -18,8 +19,8 @@ export const Picture = ({picture}: TProps) => {
 }
 
 const styles = StyleSheet.create({
-  image:{
-    width: 300,
-    height: 400
+  image: {
+    width: 350,
+    height: 350
   }
 })
