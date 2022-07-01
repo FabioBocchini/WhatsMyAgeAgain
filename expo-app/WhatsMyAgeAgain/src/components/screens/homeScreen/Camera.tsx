@@ -1,11 +1,16 @@
 import React, {useState, useEffect, Dispatch, SetStateAction, useCallback, useRef} from 'react'
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native'
-import {Camera, CameraCapturedPicture, CameraType} from 'expo-camera'
+import {Camera, CameraCapturedPicture, CameraType, FaceDetectionResult} from 'expo-camera'
+import {Face} from 'expo-camera/build/Camera.types'
+import * as FaceDetector from 'expo-face-detector'
 import {Icon} from '@rneui/base'
+import {FaceDetecion} from './FaceDetecion'
+import {CameraCapturedPictureWithError} from '../../../types/cameraCapturedPictureWithError'
+import {cropFaceFromImage} from '../../../utils/images'
 import {ICON_COLOR} from '../../../constants/colors'
 
 type TProps = {
-  setPicture: Dispatch<SetStateAction<CameraCapturedPicture | null>>
+  setPicture: Dispatch<SetStateAction<CameraCapturedPictureWithError | null>>
   setOpenCamera: Dispatch<SetStateAction<boolean>>
 }
 
@@ -13,6 +18,7 @@ export const CustomCamera = ({setPicture, setOpenCamera}: TProps) => {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null)
   const [type, setType] = useState(CameraType.front)
   const [cameraReady, setCameraReady] = useState(false)
+  const [detectedFace, setDetectedFace] = useState<Face | undefined>(undefined)
 
   const cameraRef = useRef<Camera>(null)
 
@@ -30,11 +36,21 @@ export const CustomCamera = ({setPicture, setOpenCamera}: TProps) => {
     }
 
     await cameraRef.current?.takePictureAsync({
-      isImageMirror: true,
-      onPictureSaved: setPicture,
-      base64: true
+      onPictureSaved: async (cameraCapturedPicture: CameraCapturedPicture) =>
+        setPicture(
+          await cropFaceFromImage(cameraCapturedPicture, detectedFace)
+        )
     })
-  }, [cameraReady])
+  }, [cameraReady, detectedFace])
+
+  const handleFacesDetected = (faces: FaceDetectionResult) => {
+    const face = faces.faces[0]
+    if (face && typeof face !== 'undefined') {
+      setDetectedFace(face)
+      return
+    }
+    setDetectedFace(undefined)
+  }
 
   useEffect(() => {
     (async () => {
@@ -53,8 +69,22 @@ export const CustomCamera = ({setPicture, setOpenCamera}: TProps) => {
 
   return (
     <View style={styles.container}>
-      <Camera style={styles.camera} type={type} onCameraReady={() => setCameraReady(true)} ref={cameraRef}>
+      <Camera
+        style={styles.camera}
+        type={type}
+        onCameraReady={() => setCameraReady(true)}
+        ref={cameraRef}
+        ratio={'1:1'}
 
+        onFacesDetected={handleFacesDetected}
+        faceDetectorSettings={{
+          mode: FaceDetector.FaceDetectorMode.fast,
+          detectLandmarks: FaceDetector.FaceDetectorLandmarks.none,
+          runClassifications: FaceDetector.FaceDetectorClassifications.none,
+          minDetectionInterval: 100,
+          tracking: true,
+        }}
+      >
         <View style={styles.topRowContainer}>
           <TouchableOpacity style={styles.abortButton} onPress={handleCancel}>
             <Icon type="antdesign" name="close" size={30} color={ICON_COLOR}/>
@@ -74,6 +104,7 @@ export const CustomCamera = ({setPicture, setOpenCamera}: TProps) => {
         </View>
 
       </Camera>
+      {detectedFace && <FaceDetecion face={detectedFace}/>}
     </View>
   )
 }

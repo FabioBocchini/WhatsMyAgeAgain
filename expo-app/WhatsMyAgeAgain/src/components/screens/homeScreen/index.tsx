@@ -2,18 +2,22 @@ import React, {useCallback, useState} from 'react'
 import {StyleSheet, View} from 'react-native'
 import {CustomCamera as Camera} from './Camera'
 import {Picture} from './Picture'
-import {CameraCapturedPicture} from 'expo-camera'
 import {Button} from '../../ui/Button'
 import {PredictionResult} from './PredictionResult'
 import {Prediction} from '../../../types/prediction'
 import {useTensorflow} from '../../../contexts/tensorflow'
 import {Loading} from '../../ui/Loading'
 import {BACKGROUND_COLOR} from '../../../constants/colors'
+import {CameraCapturedPictureWithError} from '../../../types/cameraCapturedPictureWithError'
+import {FaceDetectionError} from '../../../enums/faceDetectionError'
 
 export const HomeScreen = () => {
-  const [pic, setPic] = useState<CameraCapturedPicture | null>(null)
+  const [pic, setPic] = useState<CameraCapturedPictureWithError | null>(null)
   const [openCamera, setOpenCamera] = useState(false)
   const [prediction, setPrediction] = useState<Prediction | null>(null)
+
+  //TODO: show error on screen
+  const [error, setError] = useState<FaceDetectionError | null>(null)
 
   const {predict, isModelLoading} = useTensorflow()
 
@@ -25,7 +29,7 @@ export const HomeScreen = () => {
 
   const handlePredict = useCallback(async () => {
     if (!pic) {
-      console.log('pic is not set')
+      setError(FaceDetectionError.NO_PICTURE_TAKEN)
       return
     }
 
