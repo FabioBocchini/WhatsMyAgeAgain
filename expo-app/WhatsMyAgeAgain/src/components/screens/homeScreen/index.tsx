@@ -15,9 +15,7 @@ export const HomeScreen = () => {
   const [pic, setPic] = useState<CameraCapturedPictureWithError | null>(null)
   const [openCamera, setOpenCamera] = useState(false)
   const [prediction, setPrediction] = useState<Prediction | null>(null)
-
-  //TODO: show error on screen
-  const [error, setError] = useState<FaceDetectionError | null>(null)
+  const [error, setError] = useState<FaceDetectionError | undefined>(undefined)
 
   const {predict, isModelLoading} = useTensorflow()
 
@@ -59,7 +57,7 @@ export const HomeScreen = () => {
   return (
     <View style={styles.container}>
       <Button onPress={handleShoot}>Riscatta la foto</Button>
-      <Picture picture={pic}/>
+      <Picture picture={pic} error={error}/>
       {!prediction ?
         <Button onPress={handlePredict}>Fai una predizione</Button>
         :
