@@ -1,6 +1,6 @@
 import {FlipType, manipulateAsync} from 'expo-image-manipulator'
 import {fetch} from '@tensorflow/tfjs-react-native'
-import {CameraCapturedPicture} from 'expo-camera'
+import {CameraCapturedPicture, CameraType} from 'expo-camera'
 import {Face} from 'expo-camera/build/Camera.types'
 import {FaceDetectionError} from '../enums/faceDetectionError'
 import {Dimensions} from 'react-native'
@@ -27,7 +27,11 @@ export const preprocessImageForTensorflow = async (image: CameraCapturedPicture)
   return imageToUint8Array(r)
 }
 
-export const cropFaceFromImage = async (image: CameraCapturedPicture, detectedFaceFeatures: Face | undefined) => {
+export const cropFaceFromImage = async (
+  image: CameraCapturedPicture,
+  detectedFaceFeatures: Face | undefined,
+  cameraType: CameraType
+) => {
   if (typeof detectedFaceFeatures === 'undefined') {
     return {
       ...image,
@@ -35,7 +39,10 @@ export const cropFaceFromImage = async (image: CameraCapturedPicture, detectedFa
     }
   }
 
-  const flippedImage = await manipulateAsync(image.uri, [{flip: FlipType.Horizontal}])
+  // flipping the image only if it's taken from front cameras
+  const flippedImage = cameraType === CameraType.front ?
+    await manipulateAsync(image.uri, [{flip: FlipType.Horizontal}]) :
+    image
 
   const {origin, size} = detectedFaceFeatures.bounds
 

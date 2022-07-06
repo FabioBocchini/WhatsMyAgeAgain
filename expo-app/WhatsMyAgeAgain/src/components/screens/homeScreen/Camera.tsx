@@ -38,7 +38,7 @@ export const CustomCamera = ({setPicture, setOpenCamera}: TProps) => {
     await cameraRef.current?.takePictureAsync({
       onPictureSaved: async (cameraCapturedPicture: CameraCapturedPicture) =>
         setPicture(
-          await cropFaceFromImage(cameraCapturedPicture, detectedFace)
+          await cropFaceFromImage(cameraCapturedPicture, detectedFace, type)
         )
     })
   }, [cameraReady, detectedFace])

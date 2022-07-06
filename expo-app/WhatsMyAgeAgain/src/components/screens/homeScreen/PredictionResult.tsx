@@ -11,7 +11,7 @@ export const PredictionResult = ({prediction}: Tprops) => {
     <View style={styles.container}>
       <Text style={styles.name}>Sesso:</Text><Text style={styles.prediction}>{prediction.gender}</Text>
       <Text style={styles.name}>Età:</Text><Text style={styles.prediction}>{prediction.age}</Text>
-      <Text style={styles.name}>Etnia:</Text><Text style={styles.prediction}>{' '}</Text>
+      <Text style={styles.name}>Etnia:</Text><Text style={styles.prediction}>{prediction.ethnicity}</Text>
     </View>
   )
 }

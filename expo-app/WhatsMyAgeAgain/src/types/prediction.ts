@@ -1,4 +1,5 @@
 export type Prediction = {
-  gender: string
   age: number
+  ethnicity: string
+  gender: string
 }

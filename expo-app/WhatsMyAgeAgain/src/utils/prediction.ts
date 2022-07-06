@@ -1,6 +1,7 @@
 import {UninterpretedPrediction} from '../types/uninterpretedPrediction'
 import {Gender} from '../enums/gender'
-// import {Ethnicity} from 's../enums/enthinicty'
+import {Ethnicity} from '../enums/enthinicty'
+import {argMax} from './array'
 
 export const interpretPrediction = async (prediction: UninterpretedPrediction) => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -10,17 +11,19 @@ export const interpretPrediction = async (prediction: UninterpretedPrediction) =
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  const gender = await prediction[1].arraySync()[0][0]
-  console.log('gender:', gender)
+  const genderArray = await prediction[1].arraySync()[0]
+  const gender = argMax(genderArray)
+  console.log('gender:', genderArray[gender])
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  // const ethnicity = await prediction[2].arraySync()[0][0]
-  // console.log('ethnicity:', ethnicity)
+  const ethnicityArray = await prediction[2].arraySync()[0]
+  const ethnicity = argMax(ethnicityArray)
+  console.log('ethnicity:', ethnicityArray.map((value: number, index: number) => `${Ethnicity[index]}: ${value}`))
 
   return {
-    gender: Gender[Math.round(gender)],
+    gender: Gender[gender],
     age: Math.round(age),
-    // ethnicity: Ethnicity[Math.round(age)]
+    ethnicity: Ethnicity[ethnicity]
   }
 }
