@@ -1,0 +1,34 @@
+{
+  "expo": {
+    "name": "WhatsMyAgeAgain",
+    "slug": "WhatsMyAgeAgain",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#586F6B"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "whats-my-age-again"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#586F6B"
+      }
+    },
+    "web": {
+      "favicon": "./assets/icon.png"
+    }
+  }
+}
