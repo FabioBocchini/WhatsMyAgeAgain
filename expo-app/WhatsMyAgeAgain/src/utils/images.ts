@@ -6,10 +6,22 @@ import {FaceDetectionError} from '../enums/faceDetectionError'
 import {Dimensions} from 'react-native'
 
 
+/**
+ * Resizes an image to be 128x128 pixels.
+ *
+ * @param {CameraCapturedPicture} image Input image
+ * @return {CameraCapturedPicture} Resized image
+ */
 const resizeImage = async (image: CameraCapturedPicture) => {
   return manipulateAsync(image.uri, [{resize: {height: 128, width: 128}}])
 }
 
+/**
+ * Updates a CameraCaputredPicture `data` field to store a Uint8Array instead of the image uri.
+ *
+ * @param {CameraCapturedPicture} image Input image
+ * @return {CameraCapturedPicture} Image object with update `data` field
+ */
 const imageToUint8Array = async (image: CameraCapturedPicture) => {
   const response = await fetch(image.uri, {}, {isBinary: true})
   const imageDataArrayBuffer = await response.arrayBuffer()
@@ -22,16 +34,32 @@ const imageToUint8Array = async (image: CameraCapturedPicture) => {
   }
 }
 
+/**
+ * Process the image passed to be used with the tensorflow model. It applies resizeImage() and imageToUint8Array().
+ *
+ * @param {CameraCapturedPicture} image Input image
+ * @return {CameraCapturedPicture} Processed image
+ */
 export const preprocessImageForTensorflow = async (image: CameraCapturedPicture) => {
   const r = await resizeImage(image)
   return imageToUint8Array(r)
 }
 
+/**
+ * Crops the image using the coordinates returned from the face recognition.
+ *
+ * @param {CameraCapturedPicture} image Input image
+ * @param {Face | undefined} detectedFaceFeatures Coordinates of the face recognition square
+ * @param {CameraType} cameraType Front or Back camera
+ * @return {CameraCapturedPicture} Processed image
+ */
 export const cropFaceFromImage = async (
   image: CameraCapturedPicture,
   detectedFaceFeatures: Face | undefined,
   cameraType: CameraType
 ) => {
+
+  // if face recognition does not find a face returns an error
   if (typeof detectedFaceFeatures === 'undefined') {
     return {
       ...image,
@@ -46,6 +74,7 @@ export const cropFaceFromImage = async (
 
   const {origin, size} = detectedFaceFeatures.bounds
 
+  // calculting coordinates based on the screen dimensions
   const windowWidth = Dimensions.get('screen').width
   const windowHeight = Dimensions.get('screen').height
 
@@ -57,16 +86,17 @@ export const cropFaceFromImage = async (
   const width = size.width * wRatio
   const height = size.height * hRatio
 
-  const shift = 20
+  // reduce the image by 8% from the original coordinates to better fit the face
+  const shift = 8
   const orizontalShift = originX / 100 * shift
   const verticalShift = originY / 100 * shift
 
   return manipulateAsync(flippedImage.uri, [{
     crop: {
-      originX: originX - orizontalShift,
-      originY: originY - verticalShift,
-      width: width + 2 * orizontalShift,
-      height: height + 2 * verticalShift
+      originX: originX + orizontalShift,
+      originY: originY + verticalShift,
+      width: width - 2 * orizontalShift,
+      height: height - 2 * verticalShift
     }
   }])
 }

@@ -26,9 +26,13 @@ export const TensorflowProvider = ({children}: TProps) => {
   const [isModelLoading, setIsModelLoading] = useState(false)
   const [model, setModel] = useState<tf.LayersModel | null>(null)
 
+  /**
+   * Loads the model from the `assets` directory, while doing so puts the app in a loading state.
+   *
+   */
   const loadModel = useCallback(async () => {
-    await tf.ready()
     setIsModelLoading(true)
+    await tf.ready()
     try {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const modelJson = require(MODEL_PATH)
@@ -43,6 +47,12 @@ export const TensorflowProvider = ({children}: TProps) => {
     setIsModelLoading(false)
   }, [])
 
+  /**
+   * Processes the picture, normalizes it and calls model.predict().
+   *
+   * @param {CameraCapturedPicture} picture Full picture taken from camera
+   * @return {Prediction | null} Human-readable prediction, null if there is an error
+   */
   const predict = useCallback(async (picture: CameraCapturedPicture) => {
     if (model === null) {
       console.error('model is not ready yet')
@@ -63,6 +73,7 @@ export const TensorflowProvider = ({children}: TProps) => {
     }
   }, [model])
 
+  // the model is loaded as soon as the app starts
   useEffect(() => {
     (async () => loadModel())()
 
